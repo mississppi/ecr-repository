@@ -33,13 +33,22 @@ jobs:
         run: |
           docker-compose build
 
+      - name: デバッグ: `docker-compose images`
+        run: |
+          set -x  # デバッグモード有効化
+          docker-compose images  # どのサービスがあるか確認
+
       - name: イメージを ECR にタグ付け & プッシュ
         run: |
-          NGX_IMAGE=$(docker-compose images -q web)
-          PHP_IMAGE=$(docker-compose images -q app)
-          
+          set -x  # デバッグモード有効化
+          NGX_IMAGE=$(docker-compose images -q nginx)
+          PHP_IMAGE=$(docker-compose images -q php)
+
+          echo "NGX_IMAGE=$NGX_IMAGE"
+          echo "PHP_IMAGE=$PHP_IMAGE"
+
           docker tag $NGX_IMAGE ${{ secrets.ECR_REGISTRY }}/my-nginx-repo:latest
           docker tag $PHP_IMAGE ${{ secrets.ECR_REGISTRY }}/my-php-repo:latest
-          
+
           docker push ${{ secrets.ECR_REGISTRY }}/my-nginx-repo:latest
           docker push ${{ secrets.ECR_REGISTRY }}/my-php-repo:latest
