@@ -35,11 +35,11 @@ jobs:
 
       - name: ECR にタグ付け（nginx）
         run: |
-          docker tag $(docker-compose images -q nginx) ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_NGINX_REPOSITORY }}:latest
+          docker tag $(docker-compose images -q web) ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_NGINX_REPOSITORY }}:latest
 
       - name: ECR にタグ付け（php）
         run: |
-          docker tag $(docker-compose images -q php) ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_PHP_REPOSITORY }}:latest
+          docker tag $(docker-compose images -q app) ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_PHP_REPOSITORY }}:latest
 
       - name: ECR にプッシュ（nginx）
         run: |
