@@ -13,6 +13,11 @@ jobs:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v3
 
+      - name: Docker compose をインストール
+        run: | 
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
       - name: AWS にログイン
         uses: aws-actions/configure-aws-credentials@v2
         with:
