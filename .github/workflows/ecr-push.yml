@@ -3,7 +3,7 @@ name: Build and Push to ECR
 on:
   push:
     branches:
-      - main  # main ブランチに push されたら実行
+      - main
 
 jobs:
   build-and-push:
@@ -13,8 +13,8 @@ jobs:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v3
 
-      - name: Docker compose をインストール
-        run: | 
+      - name: Docker Compose をインストール
+        run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
@@ -29,22 +29,17 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Docker Compose でビルド
+      - name: Docker イメージをビルド
         run: |
           docker-compose build
 
-      - name: ECR にタグ付け（nginx）
+      - name: イメージを ECR にタグ付け & プッシュ
         run: |
-          docker tag $(docker-compose images -q web) ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_NGINX_REPOSITORY }}:latest
-
-      - name: ECR にタグ付け（php）
-        run: |
-          docker tag $(docker-compose images -q app) ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_PHP_REPOSITORY }}:latest
-
-      - name: ECR にプッシュ（nginx）
-        run: |
-          docker push ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_NGINX_REPOSITORY }}:latest
-
-      - name: ECR にプッシュ（php）
-        run: |
-          docker push ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_PHP_REPOSITORY }}:latest
+          NGX_IMAGE=$(docker-compose images -q web)
+          PHP_IMAGE=$(docker-compose images -q app)
+          
+          docker tag $NGX_IMAGE ${{ secrets.ECR_REGISTRY }}/my-nginx-repo:latest
+          docker tag $PHP_IMAGE ${{ secrets.ECR_REGISTRY }}/my-php-repo:latest
+          
+          docker push ${{ secrets.ECR_REGISTRY }}/my-nginx-repo:latest
+          docker push ${{ secrets.ECR_REGISTRY }}/my-php-repo:latest
