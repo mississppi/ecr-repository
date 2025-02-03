@@ -35,8 +35,8 @@ jobs:
 
       - name: イメージを ECR にタグ付け & プッシュ
         run: |
-          NGX_IMAGE=$(docker-compose images -q web)
-          PHP_IMAGE=$(docker-compose images -q app)
+          NGX_IMAGE=$(docker compose ls -q web)
+          PHP_IMAGE=$(docker compose ls -q app)
           
           docker tag $NGX_IMAGE ${{ secrets.ECR_REGISTRY }}/my-nginx-repo:latest
           docker tag $PHP_IMAGE ${{ secrets.ECR_REGISTRY }}/my-php-repo:latest
