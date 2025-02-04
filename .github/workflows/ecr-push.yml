@@ -37,6 +37,8 @@ jobs:
 
       - name: イメージを ECR にタグ付け & プッシュ
         run: |
+          docker images 
+
           NGX_IMAGE=$(docker images -q web)
           PHP_IMAGE=$(docker images -q app)
           
